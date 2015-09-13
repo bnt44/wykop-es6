@@ -1,7 +1,15 @@
 # wykop-es6
+## Installation
+```
+npm install https://github.com/bnt44/wykop-es6
+```
+
+
 ## Sample usage
 
 ```javascript
+var Wykop = require('wykop-es6');
+
 var wykop = new Wykop('appkey', 'secretkey');
 var user;
 
