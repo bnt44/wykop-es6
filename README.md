@@ -1,7 +1,7 @@
 # wykop-es6
 ## Installation
 ```
-npm install https://github.com/bnt44/wykop-es6
+npm install wykop-es6
 ```
 
 
