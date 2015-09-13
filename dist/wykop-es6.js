@@ -98,9 +98,13 @@ var Wykop = (function () {
 
 			var _params = !(0, _lodash2['default'])(params).isEmpty() ? params.join('/') + '/' : ''; // zmiana tablicy z parametrami metody w string
 			var _api = Wykop.parseApi({ appkey: appkey, userkey: userkey, output: output, format: format }, api); // zmiana obiektu z parametrami api w string
-			var sortedPost = (0, _lodash2['default'])(post).sortBy(function (val, key) {
-				return key;
-			}).toString(); // sortowanie parametrów post alfabetycznie
+
+			var _Wykop$parsePostParams = Wykop.parsePostParams(post);
+
+			var form = _Wykop$parsePostParams.form;
+			var formData = _Wykop$parsePostParams.formData;
+			var sortedPost = _Wykop$parsePostParams.sortedPost;
+			// parsowanie parametrów POST
 
 			// tworzymy url zapytania
 			var url = 'http://a.wykop.pl/' + rtype + '/' + rmethod + '/' + _params + _api;
@@ -114,8 +118,8 @@ var Wykop = (function () {
 					'User-Agent': useragent,
 					'apisign': (0, _cryptoJsMd52['default'])(secretkey + url + sortedPost).toString()
 				},
-				form: post
-				//formData: post
+				form: form,
+				formData: formData
 			};
 
 			/*
@@ -142,7 +146,7 @@ var Wykop = (function () {
 		}
 
 		/*
-  * @param {String} accountkey Klucz połączenia konta z aplikacją
+  * @param {String} accountkey Klucz połączenia konta z aplikacją, zwraca nowy obiekt User
   */
 	}, {
 		key: 'login',
@@ -162,9 +166,6 @@ var Wykop = (function () {
 				var user = new Wykop(appkey, secretkey, { output: output, format: format, timeout: timeout, useragent: useragent, userkey: userkey, info: res });
 				callback(null, user);
 				return Promise.resolve(user);
-			})['catch'](function (err) {
-				callback(err);
-				return Promise.reject(err);
 			});
 		}
 
@@ -179,6 +180,37 @@ var Wykop = (function () {
 			return (0, _lodash2['default'])(keys).reduce(function (memo, key, index) {
 				return memo + key + ',' + base[key] + (index === keys.length - 1 ? '' : ',');
 			}, '');
+		}
+	}, {
+		key: 'parsePostParams',
+		value: function parsePostParams() {
+			var post = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
+			var form = undefined,
+			    formData = undefined,
+			    sortedPost = undefined;
+
+			if (post.embed && typeof post.embed !== 'string') {
+				form = undefined;
+				formData = post;
+				sortedPost = (function () {
+					var _post = _lodash2['default'].omit(post, 'embed');
+					return (0, _lodash2['default'])(_post).sortBy(function (val, key) {
+						return key;
+					}).toString();
+				})();
+			} else if (!(0, _lodash2['default'])(post).isEmpty()) {
+				form = post;
+				formData = undefined;
+				sortedPost = (0, _lodash2['default'])(post).sortBy(function (val, key) {
+					return key;
+				}).toString();
+			} else {
+				form = undefined;
+				formData = undefined;
+				sortedPost = "";
+			}
+			return { form: form, formData: formData, sortedPost: sortedPost };
 		}
 	}, {
 		key: 'createMethods',
