@@ -1,8 +1,8 @@
 {
   "name": "wykop-es6",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Wykop.pl API library",
-  "main": "wykop-es6.js",
+  "main": "./dist/wykop-es6.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
