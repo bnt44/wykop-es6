@@ -1,4 +1,7 @@
 # wykop-es6
+[![Code Climate](https://codeclimate.com/github/bnt44/wykop-es6/badges/gpa.svg)](https://codeclimate.com/github/bnt44/wykop-es6)
+[![npm](https://img.shields.io/npm/v/wykop-es6.svg)](https://www.npmjs.com/package/wykop-es6)
+[![npm](https://img.shields.io/npm/l/wykop-es6.svg)](https://www.npmjs.com/package/wykop-es6)
 ## Installation
 ```
 npm install wykop-es6
