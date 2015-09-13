@@ -8,11 +8,11 @@ var user;
 wykop.login('accountkey')
 	.then(function(newUser) {
 		user = newUser;
-		return user.get('Entries', 'Add', {post: {body: "test"}}); // dodanie wpisu 
+		return user.get('Entries', 'Add', {post: {body: "test", embed: "http://plik.jpg"}}); // dodanie wpisu 
 	})
 	.then(function(res) {
 		console.log(res);
-		return user.get('Entries', 'Index', {params:[123456789]}); // pobranie wpisu
+		return user.addEntry({post: {body: "test", embed: "http://plik.jpg"}}); // dodanie wpisu metoda uproszczona
 	})
 	.then(function(res) {
 		console.log(res);
