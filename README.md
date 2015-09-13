@@ -1,18 +1,33 @@
 # wykop-es6
+## Installation
+```
+npm install https://github.com/bnt44/wykop-es6
+```
+
+
 ## Sample usage
 
 ```javascript
+var Wykop = require('wykop-es6');
+
 var wykop = new Wykop('appkey', 'secretkey');
 var user;
 
 wykop.login('accountkey')
 	.then(function(newUser) {
 		user = newUser;
-		return user.get('Entries', 'Add', {post: {body: "test", embed: "http://plik.jpg"}}); // dodanie wpisu 
+		// dodanie wpisu
+		return user.get('Entries', 'Add', {post: {body: "test", embed: "http://plik.jpg"}});
 	})
 	.then(function(res) {
 		console.log(res);
-		return user.addEntry({post: {body: "test", embed: "http://plik.jpg"}}); // dodanie wpisu metoda uproszczona
+		// dodanie wpisu metodą uproszczoną
+		return user.addEntry({post: {body: "test", embed: "http://plik.jpg"}}); 
+	})
+	.then(function(res) {
+		console.log(res);
+		// dodanie wpisu i upload obrazka
+		return user.addEntry({post: {body: "test", embed: fs.createReadStream(__dirname + '/obrazek.jpg')}}); 
 	})
 	.then(function(res) {
 		console.log(res);
