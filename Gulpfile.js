@@ -5,7 +5,7 @@ var uglify = require('gulp-uglify');
 gulp.task('default', function () {
 	return gulp.src('lib/*.js')
 		.pipe(babel())
-		//.pipe(uglify())
+		.pipe(uglify())
 		.pipe(gulp.dest('dist'));
 });
 
