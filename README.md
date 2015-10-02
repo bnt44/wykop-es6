@@ -12,7 +12,7 @@ npm install wykop-es6
 ## Sample usage
 
 ```javascript
-var Wykop = require('wykop-es6');
+var Wykop = require('wykop-es6'),
 
 var wykop = new Wykop('appkey', 'secretkey');
 var user;
@@ -22,16 +22,6 @@ wykop.login('accountkey')
 		user = newUser;
 		// dodanie wpisu
 		return user.get('Entries', 'Add', {post: {body: "test", embed: "http://plik.jpg"}});
-	})
-	.then(function(res) {
-		console.log(res);
-		// dodanie wpisu metodą uproszczoną
-		return user.addEntry({post: {body: "test", embed: "http://plik.jpg"}}); 
-	})
-	.then(function(res) {
-		console.log(res);
-		// dodanie wpisu i upload obrazka
-		return user.addEntry({post: {body: "test", embed: fs.createReadStream(__dirname + '/obrazek.jpg')}}); 
 	})
 	.then(function(res) {
 		console.log(res);
