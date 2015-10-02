@@ -4,7 +4,7 @@
   "description": "Wykop.pl API library",
   "main": "./dist/wykop-es6.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha test"
   },
   "repository": {
     "type": "git",
@@ -32,6 +32,7 @@
   },
   "devDependencies": {
     "gulp": "^3.9.0",
-    "gulp-babel": "^5.2.1"
+    "gulp-babel": "^5.2.1",
+    "mocha": "^2.3.3"
   }
 }
