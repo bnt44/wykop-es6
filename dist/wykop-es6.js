@@ -25,10 +25,6 @@ var _request = require('request');
 
 var _request2 = _interopRequireDefault(_request);
 
-var _methodsJs = require('./methods.js');
-
-var _methodsJs2 = _interopRequireDefault(_methodsJs);
-
 var f = function f() {};
 
 var Wykop = (function () {
@@ -57,8 +53,8 @@ var Wykop = (function () {
 		Object.assign(this, { appkey: appkey, secretkey: secretkey, output: output, format: format, timeout: timeout, useragent: useragent, userkey: userkey, info: info });
 	}
 
-	/*
- * Generujemy metody!
+	/**
+ * exportujemy klasę Wykop
  */
 
 	/**
@@ -168,10 +164,6 @@ var Wykop = (function () {
 				return Promise.resolve(user);
 			});
 		}
-
-		/*
-  * Kreator metod uproszczonych na podstawie ./methods.js
-  */
 	}], [{
 		key: 'parseApi',
 		value: function parseApi(base, api) {
@@ -208,53 +200,10 @@ var Wykop = (function () {
 			}
 			return { form: form, formData: formData, sortedPost: sortedPost };
 		}
-	}, {
-		key: 'createMethods',
-		value: function createMethods() {
-			var _iteratorNormalCompletion = true;
-			var _didIteratorError = false;
-			var _iteratorError = undefined;
-
-			try {
-				var _loop = function () {
-					var item = _step.value;
-
-					Wykop.prototype[item.name] = function () {
-						var obj = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-						var callback = arguments.length <= 1 || arguments[1] === undefined ? f : arguments[1];
-
-						//assert(this.userkey, 'Nie jesteś zalogowany');
-						return this.get(item.type, item.method, obj, callback);
-					};
-				};
-
-				for (var _iterator = _methodsJs2['default'][Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-					_loop();
-				}
-			} catch (err) {
-				_didIteratorError = true;
-				_iteratorError = err;
-			} finally {
-				try {
-					if (!_iteratorNormalCompletion && _iterator['return']) {
-						_iterator['return']();
-					}
-				} finally {
-					if (_didIteratorError) {
-						throw _iteratorError;
-					}
-				}
-			}
-		}
 	}]);
 
 	return Wykop;
 })();
 
-Wykop.createMethods();
-
-/**
-* exportujemy klasę Wykop jako default
-*/
 exports['default'] = Wykop;
 module.exports = exports['default'];
