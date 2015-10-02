@@ -2,7 +2,7 @@
   "name": "wykop-es6",
   "version": "0.2.5",
   "description": "Wykop.pl API library",
-  "main": "./dist/wykop-es6.js",
+  "main": "./dist/index.js",
   "scripts": {
     "test": "mocha test"
   },
