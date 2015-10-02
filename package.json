@@ -10,7 +10,7 @@
     "type": "git",
     "url": "git+https://github.com/bnt44/wykop-es6.git"
   },
-  "author": "MirkoStats <bnt44_npm@wp.pl>",
+  "author": "MirkoStats <git@mirkostats.pl>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/bnt44/wykop-es6/issues"
@@ -21,7 +21,6 @@
   },
   "keywords": [
     "wykop",
-    "api",
     "wykop-api",
     "Wykop.pl"
   ],
