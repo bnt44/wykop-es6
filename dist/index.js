@@ -1,29 +1,13 @@
 'use strict';
-Object.defineProperty(exports, '__esModule', {
-	value: true
-});
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-var _lodash = require('lodash');
-
-var _lodash2 = _interopRequireDefault(_lodash);
-
-var _assert = require('assert');
-
-var _assert2 = _interopRequireDefault(_assert);
-
-var _cryptoJsMd5 = require('crypto-js/md5');
-
-var _cryptoJsMd52 = _interopRequireDefault(_cryptoJsMd5);
-
-var _request = require('request');
-
-var _request2 = _interopRequireDefault(_request);
+var _ = require('lodash');
+var assert = require('assert');
+var md5 = require('crypto-js/md5');
+var request = require('request');
 
 var f = function f() {};
 
@@ -49,7 +33,7 @@ var Wykop = (function () {
 
 		_classCallCheck(this, Wykop);
 
-		(0, _assert2['default'])(appkey && secretkey, 'appkey and secretkey cannot be null');
+		assert(appkey && secretkey, 'appkey and secretkey cannot be null');
 		Object.assign(this, { appkey: appkey, secretkey: secretkey, output: output, format: format, timeout: timeout, useragent: useragent, userkey: userkey, info: info });
 	}
 
@@ -82,7 +66,7 @@ var Wykop = (function () {
 			var post = _ref2.post;
 			var callback = arguments.length <= 3 || arguments[3] === undefined ? f : arguments[3];
 
-			(0, _assert2['default'])(rtype && rmethod, 'rtype and rmethod must be String and cannot be null');
+			assert(rtype && rmethod, 'rtype and rmethod must be String and cannot be null');
 
 			var appkey = this.appkey;
 			var secretkey = this.secretkey;
@@ -92,7 +76,7 @@ var Wykop = (function () {
 			var timeout = this.timeout;
 			var useragent = this.useragent;
 
-			var _params = !(0, _lodash2['default'])(params).isEmpty() ? params.join('/') + '/' : ''; // zmiana tablicy z parametrami metody w string
+			var _params = !_(params).isEmpty() ? params.join('/') + '/' : ''; // zmiana tablicy z parametrami metody w string
 			var _api = Wykop.parseApi({ appkey: appkey, userkey: userkey, output: output, format: format }, api); // zmiana obiektu z parametrami api w string
 
 			var _Wykop$parsePostParams = Wykop.parsePostParams(post);
@@ -107,12 +91,12 @@ var Wykop = (function () {
 
 			var options = {
 				url: url,
-				method: !(0, _lodash2['default'])(post).isEmpty() ? 'POST' : 'GET',
+				method: !_(post).isEmpty() ? 'POST' : 'GET',
 				json: true,
 				timeout: timeout,
 				headers: {
 					'User-Agent': useragent,
-					'apisign': (0, _cryptoJsMd52['default'])(secretkey + url + sortedPost).toString()
+					'apisign': md5(secretkey + url + sortedPost).toString()
 				},
 				form: form,
 				formData: formData
@@ -122,7 +106,7 @@ var Wykop = (function () {
    * Wykonujemy request, metoda get zwraca promise
    */
 			return new Promise(function (resolve, reject) {
-				(0, _request2['default'])(options, function (error, response, body) {
+				request(options, function (error, response, body) {
 
 					if (error) {
 						reject(error);
@@ -149,7 +133,7 @@ var Wykop = (function () {
 		value: function login(accountkey) {
 			var callback = arguments.length <= 1 || arguments[1] === undefined ? f : arguments[1];
 
-			(0, _assert2['default'])(accountkey, 'accountkey cannot be null');
+			assert(accountkey, 'accountkey cannot be null');
 			var appkey = this.appkey;
 			var secretkey = this.secretkey;
 			var output = this.output;
@@ -168,8 +152,8 @@ var Wykop = (function () {
 		key: 'parseApi',
 		value: function parseApi(base, api) {
 			Object.assign(base, api);
-			var keys = (0, _lodash2['default'])(base).omit(_lodash2['default'].isUndefined).omit(_lodash2['default'].isNull).keys();
-			return (0, _lodash2['default'])(keys).reduce(function (memo, key, index) {
+			var keys = _(base).omit(_.isUndefined).omit(_.isNull).keys();
+			return _(keys).reduce(function (memo, key, index) {
 				return memo + key + ',' + base[key] + (index === keys.length - 1 ? '' : ',');
 			}, '');
 		}
@@ -185,18 +169,18 @@ var Wykop = (function () {
 			if (post.embed && typeof post.embed !== 'string') {
 				formData = post;
 				sortedPost = (function () {
-					var _post = _lodash2['default'].omit(post, 'embed');
-					return (0, _lodash2['default'])(_post).omit(_lodash2['default'].isUndefined).omit(_lodash2['default'].isNull).sortBy(function (val, key) {
+					var _post = _.omit(post, 'embed');
+					return _(_post).omit(_.isUndefined).omit(_.isNull).sortBy(function (val, key) {
 						return key;
 					}).toString();
 				})();
-			} else if (!(0, _lodash2['default'])(post).isEmpty()) {
+			} else if (!_(post).isEmpty()) {
 				form = post;
-				sortedPost = (0, _lodash2['default'])(post).omit(_lodash2['default'].isUndefined).omit(_lodash2['default'].isNull).sortBy(function (val, key) {
+				sortedPost = _(post).omit(_.isUndefined).omit(_.isNull).sortBy(function (val, key) {
 					return key;
 				}).toString();
 			} else {
-				sortedPost = "";
+				sortedPost = '';
 			}
 			return { form: form, formData: formData, sortedPost: sortedPost };
 		}
@@ -205,5 +189,4 @@ var Wykop = (function () {
 	return Wykop;
 })();
 
-exports['default'] = Wykop;
-module.exports = exports['default'];
+module.exports = Wykop;
