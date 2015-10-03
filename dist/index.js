@@ -9,8 +9,6 @@ var assert = require('assert');
 var md5 = require('crypto-js/md5');
 var request = require('request');
 
-var f = function f() {};
-
 var Wykop = (function () {
 
 	/**
@@ -64,7 +62,7 @@ var Wykop = (function () {
 			var params = _ref2.params;
 			var api = _ref2.api;
 			var post = _ref2.post;
-			var callback = arguments.length <= 3 || arguments[3] === undefined ? f : arguments[3];
+			var callback = arguments.length <= 3 || arguments[3] === undefined ? Function.prototype : arguments[3];
 
 			assert(rtype && rmethod, 'rtype and rmethod must be String and cannot be null');
 
