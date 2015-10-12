@@ -6,10 +6,16 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var _ = require('lodash');
 var assert = require('assert');
-var md5 = require('crypto-js/md5');
+var crypto = require('crypto');
 var _request = require('request');
 
 var _Promise = typeof Promise === 'undefined' ? require('es6-promise').Promise : Promise;
+
+function md5() {
+	var string = arguments.length <= 0 || arguments[0] === undefined ? '' : arguments[0];
+
+	return crypto.createHash('md5').update(string).digest("hex");
+}
 
 var Wykop = (function () {
 
@@ -96,7 +102,7 @@ var Wykop = (function () {
 				timeout: timeout,
 				headers: {
 					'User-Agent': useragent,
-					'apisign': md5(secretkey + url + sortedPost).toString()
+					'apisign': md5(secretkey + url + sortedPost)
 				},
 				form: form,
 				formData: formData
