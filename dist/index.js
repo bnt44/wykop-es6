@@ -9,6 +9,8 @@ var assert = require('assert');
 var md5 = require('crypto-js/md5');
 var request = require('request');
 
+var _Promise = typeof Promise === 'undefined' ? require('es6-promise').Promise : Promise;
+
 var Wykop = (function () {
 
 	/**
@@ -103,7 +105,7 @@ var Wykop = (function () {
 			/*
    * Wykonujemy request, metoda get zwraca promise
    */
-			return new Promise(function (resolve, reject) {
+			return new _Promise(function (resolve, reject) {
 				request(options, function (error, response, body) {
 
 					if (error) {
@@ -143,7 +145,7 @@ var Wykop = (function () {
 				var userkey = res.userkey;
 				var user = new Wykop(appkey, secretkey, { output: output, format: format, timeout: timeout, useragent: useragent, userkey: userkey, info: res });
 				callback(null, user);
-				return Promise.resolve(user);
+				return _Promise.resolve(user);
 			});
 		}
 	}], [{

@@ -4,7 +4,7 @@
   "description": "Wykop.pl API library",
   "main": "./dist/index.js",
   "scripts": {
-    "test": "mocha test"
+    "test": "mocha test -R spec"
   },
   "repository": {
     "type": "git",
@@ -26,6 +26,7 @@
   ],
   "dependencies": {
     "crypto-js": "^3.1.5",
+    "es6-promise": "^3.0.2",
     "lodash": "^3.10.1",
     "request": "^2.61.0"
   },
