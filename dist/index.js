@@ -7,7 +7,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var _ = require('lodash');
 var assert = require('assert');
 var md5 = require('crypto-js/md5');
-var request = require('request');
+var _request = require('request');
 
 var _Promise = typeof Promise === 'undefined' ? require('es6-promise').Promise : Promise;
 
@@ -48,7 +48,7 @@ var Wykop = (function () {
  */
 
 	_createClass(Wykop, [{
-		key: 'get',
+		key: 'request',
 
 		/**
   * Tworzenie requestu do API
@@ -58,7 +58,7 @@ var Wykop = (function () {
   * @param {Object}   api    Parametry api np. {page: 1}
   * @param {Object}   post   Parametry POST np. {body: 'string'}
   */
-		value: function get(rtype, rmethod) {
+		value: function request(rtype, rmethod) {
 			var _ref2 = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
 
 			var params = _ref2.params;
@@ -106,7 +106,7 @@ var Wykop = (function () {
    * Wykonujemy request, metoda get zwraca promise
    */
 			return new _Promise(function (resolve, reject) {
-				request(options, function (error, response, body) {
+				_request(options, function (error, response, body) {
 
 					if (error) {
 						reject(error);
@@ -131,7 +131,7 @@ var Wykop = (function () {
 	}, {
 		key: 'login',
 		value: function login(accountkey) {
-			var callback = arguments.length <= 1 || arguments[1] === undefined ? f : arguments[1];
+			var callback = arguments.length <= 1 || arguments[1] === undefined ? Function.prototype : arguments[1];
 
 			assert(accountkey, 'accountkey cannot be null');
 			var appkey = this.appkey;
