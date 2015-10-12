@@ -32,7 +32,7 @@ var Wykop = (function () {
 		_classCallCheck(this, Wykop);
 
 		assert(appkey && secretkey, 'appkey and secretkey cannot be null');
-		Object.assign(this, { appkey: appkey, secretkey: secretkey, output: output, format: format, timeout: timeout, useragent: useragent, userkey: userkey, info: info });
+		_.assign(this, { appkey: appkey, secretkey: secretkey, output: output, format: format, timeout: timeout, useragent: useragent, userkey: userkey, info: info });
 	}
 
 	/**
@@ -149,7 +149,7 @@ var Wykop = (function () {
 	}], [{
 		key: 'parseApi',
 		value: function parseApi(base, api) {
-			Object.assign(base, api);
+			_.assign(base, api);
 			var keys = _(base).omit(_.isUndefined).omit(_.isNull).keys();
 			return _(keys).reduce(function (memo, key, index) {
 				return memo + key + ',' + base[key] + (index === keys.length - 1 ? '' : ',');
