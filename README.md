@@ -21,7 +21,7 @@ wykop.login('accountkey')
 	.then(function(newUser) {
 		user = newUser;
 		// dodanie wpisu
-		return user.get('Entries', 'Add', {post: {body: "test", embed: "http://plik.jpg"}});
+		return user.request('Entries', 'Add', {post: {body: "test", embed: "http://plik.jpg"}});
 	})
 	.then(function(res) {
 		console.log(res);
