@@ -16,9 +16,6 @@
     "url": "https://github.com/bnt44/wykop-es6/issues"
   },
   "homepage": "https://github.com/bnt44/wykop-es6#readme",
-  "engines": {
-    "node": ">=4.0.0"
-  },
   "keywords": [
     "wykop",
     "wykop-api",
