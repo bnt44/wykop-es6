@@ -147,7 +147,7 @@ var Wykop = (function () {
 			var timeout = this.timeout;
 			var useragent = this.useragent;
 
-			return this.get('User', 'Login', { post: { accountkey: accountkey } }).then(function (res) {
+			return this.request('User', 'Login', { post: { accountkey: accountkey } }).then(function (res) {
 				var userkey = res.userkey;
 				var user = new Wykop(appkey, secretkey, { output: output, format: format, timeout: timeout, useragent: useragent, userkey: userkey, info: res });
 				callback(null, user);
