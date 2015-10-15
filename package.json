@@ -1,7 +1,7 @@
 {
   "name": "wykop-es6",
-  "version": "0.3.0",
-  "description": "Wykop.pl API library",
+  "version": "0.4.0",
+  "description": "Wykop.pl API wrapper",
   "main": "./dist/index.js",
   "scripts": {
     "test": "mocha test -R spec"
@@ -19,7 +19,8 @@
   "keywords": [
     "wykop",
     "wykop-api",
-    "Wykop.pl"
+    "Wykop.pl",
+    "wrapper"
   ],
   "dependencies": {
     "es6-promise": "^3.0.2",

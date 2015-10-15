@@ -8,13 +8,15 @@ var _ = require('lodash');
 var assert = require('assert');
 var crypto = require('crypto');
 var _request = require('request');
+var es6Promise = require('es6-promise');
 
-var _Promise = typeof Promise === 'undefined' ? require('es6-promise').Promise : Promise;
+var _Promise = typeof Promise === 'undefined' ? es6Promise.Promise : Promise;
 
+// create md5 hash
 function md5() {
 	var string = arguments.length <= 0 || arguments[0] === undefined ? '' : arguments[0];
 
-	return crypto.createHash('md5').update(string).digest("hex");
+	return crypto.createHash('md5').update(new Buffer(string, 'utf-8')).digest("hex");
 }
 
 var Wykop = (function () {
@@ -22,7 +24,10 @@ var Wykop = (function () {
 	/**
  * @param {string} appkey    Klucz API
  * @param {string} secretkey Sekret aplikacji
- * // todo reszta
+ * @param {string} output    W przypadku, gdy aplikacja docelowa nie potrafi obsłużyć pól zawierających kod HTML należy użyć parametru API output o wartości "clear"
+ * @param {string} format    domyślnie "JSON", dostępne opcje: "JSONP" lub "XML"
+ * @param {number} timeout   czas (w ms) oczekiwania na odpowiedź serwera wykopu, domyślnie 30000ms (30 sekund)
+ * @param {string} useragent Useragent pod jakim przedstawiamy się serwerowi
  */
 
 	function Wykop(appkey, secretkey) {
@@ -34,13 +39,11 @@ var Wykop = (function () {
 		var timeout = _ref$timeout === undefined ? 30000 : _ref$timeout;
 		var _ref$useragent = _ref.useragent;
 		var useragent = _ref$useragent === undefined ? 'WypokAgent' : _ref$useragent;
-		var userkey = _ref.userkey;
-		var info = _ref.info;
 
 		_classCallCheck(this, Wykop);
 
 		assert(appkey && secretkey, 'appkey and secretkey cannot be null');
-		_.assign(this, { appkey: appkey, secretkey: secretkey, output: output, format: format, timeout: timeout, useragent: useragent, userkey: userkey, info: info });
+		_.assign(this, { appkey: appkey, secretkey: secretkey, output: output, format: format, timeout: timeout, useragent: useragent });
 	}
 
 	/**
@@ -60,9 +63,9 @@ var Wykop = (function () {
   * Tworzenie requestu do API
   * @param {string}   rtype        Nazwa zasobu np. 'Link'
   * @param {string}   rmethod      Nazwa metody np. 'Index'
-  * @param {string[]} params Parametry metody np. ['14278527']
-  * @param {Object}   api    Parametry api np. {page: 1}
-  * @param {Object}   post   Parametry POST np. {body: 'string'}
+  * @param {string[]} params       Parametry metody np. ['14278527']
+  * @param {Object}   api          Parametry api np. {page: 1}
+  * @param {Object}   post         Parametry POST np. {body: 'string'}
   */
 		value: function request(rtype, rmethod) {
 			var _ref2 = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
@@ -94,32 +97,34 @@ var Wykop = (function () {
 
 			// tworzymy url zapytania
 			var url = 'http://a.wykop.pl/' + rtype + '/' + rmethod + '/' + _params + _api;
+			var method = !_(post).isEmpty() ? 'POST' : 'GET';
+			var apisign = md5(secretkey + url + sortedPost);
 
 			var options = {
 				url: url,
-				method: !_(post).isEmpty() ? 'POST' : 'GET',
+				method: method,
 				json: true,
-				timeout: timeout,
+				timeout: +timeout,
 				headers: {
 					'User-Agent': useragent,
-					'apisign': md5(secretkey + url + sortedPost)
+					'apisign': apisign
 				},
 				form: form,
 				formData: formData
 			};
 
 			/*
-   * Wykonujemy request, metoda get zwraca promise
+   * Wykonujemy request, metoda request zwraca promise
    */
 			return new _Promise(function (resolve, reject) {
 				_request(options, function (error, response, body) {
 
 					if (error) {
-						reject(error);
 						callback(error);
+						reject(error);
 					} else if (!(response.statusCode >= 200 && response.statusCode < 300)) {
-						reject(response);
 						callback(response);
+						reject(response);
 					} else if (body.error) {
 						callback(body.error);
 						reject(body.error);
@@ -132,33 +137,32 @@ var Wykop = (function () {
 		}
 
 		/*
-  * @param {String} accountkey Klucz połączenia konta z aplikacją, zwraca nowy obiekt User
+  * @param {String} accountkey Klucz połączenia konta z aplikacją, loguje instancję klasy Wykop nadając jej userkey
   */
 	}, {
 		key: 'login',
-		value: function login(accountkey) {
+		value: function login() {
+			var _this = this;
+
+			var accountkey = arguments.length <= 0 || arguments[0] === undefined ? this.accountkey : arguments[0];
 			var callback = arguments.length <= 1 || arguments[1] === undefined ? Function.prototype : arguments[1];
 
 			assert(accountkey, 'accountkey cannot be null');
-			var appkey = this.appkey;
-			var secretkey = this.secretkey;
-			var output = this.output;
-			var format = this.format;
-			var timeout = this.timeout;
-			var useragent = this.useragent;
-
 			return this.request('User', 'Login', { post: { accountkey: accountkey } }).then(function (res) {
-				var userkey = res.userkey;
-				var user = new Wykop(appkey, secretkey, { output: output, format: format, timeout: timeout, useragent: useragent, userkey: userkey, info: res });
-				callback(null, user);
-				return _Promise.resolve(user);
+				// po zalogowaniu zapisujemy w instancji klasy Wykop parametry accountkey, userkey i info
+				_this.accountkey = accountkey;
+				_this.userkey = res.userkey;
+				_this.info = res; // obiekt, informaje o userze
+				callback(null, res);
+				return _Promise.resolve(res);
 			});
 		}
 	}], [{
 		key: 'parseApi',
 		value: function parseApi(base, api) {
+			var keys = undefined;
 			_.assign(base, api);
-			var keys = _(base).omit(_.isUndefined).omit(_.isNull).keys();
+			keys = _(base).omit(_.isUndefined).omit(_.isNull).keys();
 			return _(keys).reduce(function (memo, key, index) {
 				return memo + key + ',' + base[key] + (index === keys.length - 1 ? '' : ',');
 			}, '');
@@ -171,23 +175,15 @@ var Wykop = (function () {
 			var form = undefined,
 			    formData = undefined,
 			    sortedPost = undefined;
-
 			if (post.embed && typeof post.embed !== 'string') {
 				formData = post;
-				sortedPost = (function () {
-					var _post = _.omit(post, 'embed');
-					return _(_post).omit(_.isUndefined).omit(_.isNull).sortBy(function (val, key) {
-						return key;
-					}).toString();
-				})();
+				post = _.omit(post, 'embed');
 			} else if (!_(post).isEmpty()) {
 				form = post;
-				sortedPost = _(post).omit(_.isUndefined).omit(_.isNull).sortBy(function (val, key) {
-					return key;
-				}).toString();
-			} else {
-				sortedPost = '';
 			}
+			sortedPost = _(post).omit(_.isUndefined).omit(_.isNull).sortBy(function (val, key) {
+				return key;
+			}).toString();
 			return { form: form, formData: formData, sortedPost: sortedPost };
 		}
 	}]);
