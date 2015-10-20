@@ -7,7 +7,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var _ = require('lodash');
 var assert = require('assert');
 var crypto = require('crypto');
-var _request = require('request');
+var doRequest = require('request');
 var es6Promise = require('es6-promise');
 
 var _Promise = typeof Promise === 'undefined' ? es6Promise.Promise : Promise;
@@ -39,11 +39,19 @@ var Wykop = (function () {
 		var timeout = _ref$timeout === undefined ? 30000 : _ref$timeout;
 		var _ref$useragent = _ref.useragent;
 		var useragent = _ref$useragent === undefined ? 'WypokAgent' : _ref$useragent;
+		var accountkey = _ref.accountkey;
+		var userkey = _ref.userkey;
+		var _ref$autologin = _ref.autologin;
+		var autologin = _ref$autologin === undefined ? false : _ref$autologin;
+		var _ref$retryCount = _ref.retryCount;
+		var retryCount = _ref$retryCount === undefined ? 1 : _ref$retryCount;
 
 		_classCallCheck(this, Wykop);
 
 		assert(appkey && secretkey, 'appkey and secretkey cannot be null');
-		_.assign(this, { appkey: appkey, secretkey: secretkey, output: output, format: format, timeout: timeout, useragent: useragent });
+		_.assign(this, { appkey: appkey, secretkey: secretkey, output: output, format: format, timeout: timeout, useragent: useragent, accountkey: accountkey, userkey: userkey, autologin: autologin, retryCount: retryCount });
+
+		this._errLoginCount = 0;
 	}
 
 	/**
@@ -68,6 +76,8 @@ var Wykop = (function () {
   * @param {Object}   post         Parametry POST np. {body: 'string'}
   */
 		value: function request(rtype, rmethod) {
+			var _this = this;
+
 			var _ref2 = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
 
 			var params = _ref2.params;
@@ -76,7 +86,7 @@ var Wykop = (function () {
 			var callback = arguments.length <= 3 || arguments[3] === undefined ? Function.prototype : arguments[3];
 
 			assert(rtype && rmethod, 'rtype and rmethod must be String and cannot be null');
-
+			console.log('request: ' + rtype + ' ' + rmethod);
 			var appkey = this.appkey;
 			var secretkey = this.secretkey;
 			var userkey = this.userkey;
@@ -117,8 +127,7 @@ var Wykop = (function () {
    * Wykonujemy request, metoda request zwraca promise
    */
 			return new _Promise(function (resolve, reject) {
-				_request(options, function (error, response, body) {
-
+				doRequest(options, function (error, response, body) {
 					if (error) {
 						callback(error);
 						reject(error);
@@ -126,8 +135,20 @@ var Wykop = (function () {
 						callback(response);
 						reject(response);
 					} else if (body.error) {
-						callback(body.error);
-						reject(body.error);
+						var code = body.error.code;
+						if ((code === 11 || code === 12 || code === 13) && _this.autologin && _this[errLoginCount] < _this.retryCount) {
+							_this._errLoginCount++;
+							_this.login(undefined, function (err, res) {
+								_this.request(rtype, rmethod, { params: params, api: api, post: post }, callback).then(function (res) {
+									resolve(res);
+								})['catch'](function (err) {
+									reject(err);
+								});
+							});
+						} else {
+							callback(body);
+							reject(body);
+						}
 					} else {
 						callback(null, body);
 						resolve(body);
@@ -142,17 +163,18 @@ var Wykop = (function () {
 	}, {
 		key: 'login',
 		value: function login() {
-			var _this = this;
+			var _this2 = this;
 
 			var accountkey = arguments.length <= 0 || arguments[0] === undefined ? this.accountkey : arguments[0];
 			var callback = arguments.length <= 1 || arguments[1] === undefined ? Function.prototype : arguments[1];
 
 			assert(accountkey, 'accountkey cannot be null');
 			return this.request('User', 'Login', { post: { accountkey: accountkey } }).then(function (res) {
+				_this2._errLoginCount = 0;
 				// po zalogowaniu zapisujemy w instancji klasy Wykop parametry accountkey, userkey i info
-				_this.accountkey = accountkey;
-				_this.userkey = res.userkey;
-				_this.info = res; // obiekt, informaje o userze
+				_this2.accountkey = accountkey;
+				_this2.userkey = res.userkey;
+				_this2.info = res; // obiekt, informaje o userze
 				callback(null, res);
 				return _Promise.resolve(res);
 			});
