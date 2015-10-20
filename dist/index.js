@@ -136,7 +136,7 @@ var Wykop = (function () {
 						reject(response);
 					} else if (body.error) {
 						var code = body.error.code;
-						if ((code === 11 || code === 12 || code === 13) && _this.autologin && _this[errLoginCount] < _this.retryCount) {
+						if ((code === 11 || code === 12 || code === 13) && _this.autologin && _this._errLoginCount < _this.retryCount) {
 							_this._errLoginCount++;
 							_this.login(undefined, function (err, res) {
 								_this.request(rtype, rmethod, { params: params, api: api, post: post }, callback).then(function (res) {
