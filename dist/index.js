@@ -86,7 +86,7 @@ var Wykop = (function () {
 			var callback = arguments.length <= 3 || arguments[3] === undefined ? Function.prototype : arguments[3];
 
 			assert(rtype && rmethod, 'rtype and rmethod must be String and cannot be null');
-			console.log('request: ' + rtype + ' ' + rmethod);
+			//console.log('request: ' + rtype + ' ' + rmethod);
 			var appkey = this.appkey;
 			var secretkey = this.secretkey;
 			var userkey = this.userkey;
