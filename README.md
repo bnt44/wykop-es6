@@ -35,10 +35,10 @@ user.login('accountkey')
 	.then(function(res) {
 		console.log(res);
 		var firstEntryId = res[0].id; // id pierwszego wpisu ze streamu
-		
+
 		// plusujemy pierwszy wpis ze streamu wpisów! Używamy znów zalogowanej instancji klasy Wykop - user
 		return user.request('Entries', 'Vote', { params: ['entry', firstEntryId] });
-	}) 
+	})
 	.then(function(res) {
 		console.log(res);
 	})
@@ -54,7 +54,7 @@ user.login(accountkey, function(error, res) {
 
 	user.request('Entries', 'Add', {
 		post: {
-			body: "test", 
+			body: "test",
 			embed: "http://plik.jpg"
 		}
 	}, function(error, res) {
@@ -70,7 +70,8 @@ var options = {
 	output:  'clear', // wszystkie pola odpowiedzi zostaną wyczyszczone z kodu HTML.
 	format:  'jsonp', // format odpowiedzi, domylnie json, do wyboru xml lub jsonp
 	timeout: '30000', // czas (w ms) oczekiwania na odpowiedź serwera wykopu, domyślnie 30000ms (30 sekund)
-	useragent: 'WypokAgent' // useragent, domyslnie WypokAgent
+	useragent: 'WypokAgent', // useragent, domyslnie WypokAgent
+	ssl: false // czy wysylac requesty pod szyfrowany adres api
 };
 var wykop = new Wykop(<appkey>, <secretkey>, options);
 ```

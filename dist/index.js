@@ -28,6 +28,7 @@ var Wykop = (function () {
  * @param {string} format    domyślnie "JSON", dostępne opcje: "JSONP" lub "XML"
  * @param {number} timeout   czas (w ms) oczekiwania na odpowiedź serwera wykopu, domyślnie 30000ms (30 sekund)
  * @param {string} useragent Useragent pod jakim przedstawiamy się serwerowi
+ * @param {boolean} ssl Jezeli true requesty będą wysyłane pod szyfrowany adres
  */
 
 	function Wykop(appkey, secretkey) {
@@ -39,6 +40,8 @@ var Wykop = (function () {
 		var timeout = _ref$timeout === undefined ? 30000 : _ref$timeout;
 		var _ref$useragent = _ref.useragent;
 		var useragent = _ref$useragent === undefined ? 'WypokAgent' : _ref$useragent;
+		var _ref$ssl = _ref.ssl
+		var ssl = _ref$ssl === undefined ? false : _ref$ssl;
 		var accountkey = _ref.accountkey;
 		var userkey = _ref.userkey;
 		var _ref$autologin = _ref.autologin;
@@ -49,7 +52,7 @@ var Wykop = (function () {
 		_classCallCheck(this, Wykop);
 
 		assert(appkey && secretkey, 'appkey and secretkey cannot be null');
-		_.assign(this, { appkey: appkey, secretkey: secretkey, output: output, format: format, timeout: timeout, useragent: useragent, accountkey: accountkey, userkey: userkey, autologin: autologin, retryCount: retryCount });
+		_.assign(this, { appkey: appkey, secretkey: secretkey, output: output, format: format, timeout: timeout, useragent: useragent, ssl: ssl, accountkey: accountkey, userkey: userkey, autologin: autologin, retryCount: retryCount });
 
 		this._errLoginCount = 0;
 	}
@@ -60,7 +63,7 @@ var Wykop = (function () {
 
 	/**
  * Zmiana parametrów API w string
- * @param {Object} base 
+ * @param {Object} base
  * @param {Object} api parametry API
  */
 
@@ -94,6 +97,7 @@ var Wykop = (function () {
 			var format = this.format;
 			var timeout = this.timeout;
 			var useragent = this.useragent;
+			var ssl = this.ssl;
 
 			var _params = !_(params).isEmpty() ? params.join('/') + '/' : ''; // zmiana tablicy z parametrami metody w string
 			var _api = Wykop.parseApi({ appkey: appkey, userkey: userkey, output: output, format: format }, api); // zmiana obiektu z parametrami api w string
@@ -106,7 +110,8 @@ var Wykop = (function () {
 			// parsowanie parametrów POST
 
 			// tworzymy url zapytania
-			var url = 'http://a.wykop.pl/' + rtype + '/' + rmethod + '/' + _params + _api;
+			var protocol = ssl?'https':'http';
+			var url = protocol+'://a.wykop.pl/' + rtype + '/' + rmethod + '/' + _params + _api;
 			var method = !_(post).isEmpty() ? 'POST' : 'GET';
 			var apisign = md5(secretkey + url + sortedPost);
 
