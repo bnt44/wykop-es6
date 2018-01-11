@@ -6,7 +6,7 @@
 
 ## Instalacja
 ```
-npm install wykop-es6
+npm install wykop-es6 --save
 ```
 ## Dokumentacja Wykop API
 ##### http://www.wykop.pl/dla-programistow/dokumentacja/
