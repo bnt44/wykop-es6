@@ -1,4 +1,4 @@
-# wykop-es6
+# wykop-es6 (Wykop.pl v1 API WRAPPER)
 [![david-dm](https://david-dm.org/bnt44/wykop-es6.svg)](https://david-dm.org/bnt44/wykop-es6)
 [![Code Climate](https://codeclimate.com/github/bnt44/wykop-es6/badges/gpa.svg)](https://codeclimate.com/github/bnt44/wykop-es6)
 [![npm](https://img.shields.io/npm/v/wykop-es6.svg)](https://www.npmjs.com/package/wykop-es6)
