@@ -3,7 +3,9 @@ var babel = require('gulp-babel');
 
 gulp.task('default', function () {
 	return gulp.src('lib/*.js')
-		.pipe(babel())
+		.pipe(babel({
+			presets: ['env']
+		}))
 		.pipe(gulp.dest('dist'));
 });
 
